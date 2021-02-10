@@ -51,5 +51,5 @@ class dataloader(Dataset):
             dataloader(),
             batch_size=config.batchSize[type_],
             num_workers=config.numWorkers[type_],
-            # worker_init_fn=_worker_init_fn
+            worker_init_fn=_worker_init_fn
         )
