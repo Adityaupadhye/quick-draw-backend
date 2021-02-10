@@ -16,7 +16,7 @@ def upload_canvas():
     image_data = data['image'].split(',')[1].encode('utf-8')
     fileName = data['filename']
     className = data['class_name']
-    os.makedirs(f'{datasetPath}/{className}/image',exist_ok=True)
+    os.makedirs(f'{datasetPath}/{className}/image', exist_ok=True)
     with open(f'{datasetPath}/{className}/image/{fileName}', 'wb') as fh:
         fh.write(base64.decodebytes(image_data))
 
