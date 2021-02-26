@@ -4,11 +4,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
-from torchvision import datasets, transforms
+from torchvision import transforms
+
 import dataloader
-from torchvision.datasets import CIFAR10
-from torchvision.transforms import ToTensor
+import config
 
 
 class Net(nn.Module):
@@ -45,11 +44,13 @@ class Net(nn.Module):
 
     def __init__(self):
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(3, 16, 3, 1, padding=1)
+        self.conv1 = nn.Conv2d(1, 16, 3, 1, padding=1)
         self.conv2 = nn.Conv2d(16, 32, 3, 1, padding=1)
         self.conv3 = nn.Conv2d(32, 64, 3, 1, padding=1)
-        self.fc1 = nn.Linear(4 * 4 * 64, 500)
-        self.dropout1 = nn.Dropout(0.5)
+        # self.fc1 = nn.Linear(4 * 4 * 64, 500)
+        self.dropout1 = nn.Dropout(0.25)
+        self.dropout2 = nn.Dropout(0.5)
+        self.fc1 = nn.Linear(32*32, 500)
         self.fc2 = nn.Linear(500, 250)
         self.fc3 = nn.Linear(250, 100)
         self.fc4 = nn.Linear(100, 10)
@@ -59,13 +60,22 @@ class Net(nn.Module):
         # self.fc3 = nn.Linear(84, 10)
 
     def forward(self, x):
+        # print('before start=', x.shape)
         x = F.relu(self.conv1(x))
-        x = F.max_pool2d(x, 2, 2)
+        x = F.max_pool2d(x, 2)
         x = F.relu(self.conv2(x))
-        x = F.max_pool2d(x, 2, 2)
+        # print('after conv1=', x.shape)
+        x = F.max_pool2d(x, 2)
         x = F.relu(self.conv3(x))
-        x = F.max_pool2d(x, 2, 2)
-        x = x.view(-1, 4 * 4 * 64)
+        # print('after conv=', x.shape)
+        x = F.max_pool2d(x, 2)
+        # x = x.view(-1, 4 * 4 * 64)
+        # print('before view=', x.shape)
+        x = x.view(-1, 32 * 32)
+        # print('after view=', x.shape)
+        x = self.dropout1(x)
+        x = torch.flatten(x, 1)
+        # print('after flatten=', x.shape)
         x = F.relu(self.fc1(x))
         x = self.dropout1(x)
         x = F.relu(self.fc2(x))
@@ -209,16 +219,24 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)  # fine tuned the lr
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.4, momentum=0.9)
 
-    for epoch in range(1, 30 + 1):
+    for epoch in range(1, config.numEpochs + 1):
         print(f'epoch={epoch}')
         train(model, use_cuda, train_dataset, optimizer, epoch)  # Train the network
         test(model, use_cuda, test_dataset)  # Test the network
 
+    saveModel(model)
+
     # torch.save(model.state_dict(), "cifar.pt")
-
     # model.load_state_dict(torch.load('cifar.pt'))
-
     # Loading a saved model - model.load_state_dict(torch.load('mnist_cnn.pt'))
+
+
+def saveModel(model: Net):
+    torch.save(model.state_dict(), f'{config.savePath}/dqmodel_epochs_{config.numEpochs}.pt')
+    # save model in onnx format
+    inp = torch.randn(1, 1, 128, 128)
+    torch.onnx.export(model, inp, f'{config.savePath}/model.onnx', verbose=True,
+                      input_names=['data'], output_names=['output'])
 
 
 if __name__ == '__main__':
