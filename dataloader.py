@@ -36,6 +36,7 @@ class dataloader(Dataset):
         # print(type(image))
         # image = (np.array(image) > 0.1).astype(np.float32)[None, :, :]
         # print(type(image))
+        # image.show()
 
         # transform split
         if split == 'train':

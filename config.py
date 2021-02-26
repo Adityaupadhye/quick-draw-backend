@@ -1,7 +1,7 @@
 import os
 
 basePath = 'data'
-lr = 1e-4
+lr = 1e-3
 
 savePath = 'savedModel'
 

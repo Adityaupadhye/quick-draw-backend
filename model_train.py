@@ -177,20 +177,20 @@ def main():
 
     # Convert the dataset to tensor and subtract the mean and divide by standard
     # deviation. Why? So that neurons don't saturate!
-    transform_train = transforms.Compose(
-        [transforms.Resize((32, 32)),  # resizes the image so it can be perfect for our model.
-         transforms.RandomHorizontalFlip(),  # FLips the image w.r.t horizontal axis
-         transforms.RandomRotation(10),  # Rotates the image to a specified angel
-         transforms.RandomAffine(0, shear=10, scale=(0.8, 1.2)),  # Performs actions like zooms, change shear angles.
-         transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),  # Set the color params
-         transforms.ToTensor(),  # convert the image to tensor so that it can work with torch
-         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # Normalize all the images
-         ])
+    # transform_train = transforms.Compose(
+    #     [transforms.Resize((32, 32)),  # resizes the image so it can be perfect for our model.
+    #      transforms.RandomHorizontalFlip(),  # FLips the image w.r.t horizontal axis
+    #      transforms.RandomRotation(10),  # Rotates the image to a specified angel
+    #      transforms.RandomAffine(0, shear=10, scale=(0.8, 1.2)),  # Performs actions like zooms, change shear angles.
+    #      transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),  # Set the color params
+    #      transforms.ToTensor(),  # convert the image to tensor so that it can work with torch
+    #      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # Normalize all the images
+    #      ])
 
-    transform = transforms.Compose([transforms.Resize((32, 32)),
-                                    transforms.ToTensor(),
-                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-                                    ])
+    # transform = transforms.Compose([transforms.Resize((32, 32)),
+    #                                 transforms.ToTensor(),
+    #                                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    #                                 ])
     # [a1, a2, a3] / [b1, b2, b3] = [a1/b1, a2/b2, a3/b3]
 
     # Wx + b =~ b
@@ -205,6 +205,7 @@ def main():
     train_dataset = dataloader.getDataLoader()
     test_dataset = dataloader.getDataLoader('test')
 
+    # exit(0)
     # train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=100, shuffle=True)
     # # Batch size of 100 i.e to work with 100 images at a time
     # test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False)
@@ -216,7 +217,7 @@ def main():
 
     criterion = nn.CrossEntropyLoss()
     # same as categorical_crossentropy loss used in Keras models which runs on Tensorflow
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)  # fine tuned the lr
+    optimizer = torch.optim.Adam(model.parameters(), lr=config.lr)  # fine tuned the lr
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.4, momentum=0.9)
 
     for epoch in range(1, config.numEpochs + 1):
