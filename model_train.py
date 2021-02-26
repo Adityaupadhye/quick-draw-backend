@@ -4,10 +4,9 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision import transforms
 
-import dataloader
 import config
+import dataloader
 
 
 class Net(nn.Module):
@@ -50,39 +49,32 @@ class Net(nn.Module):
         # self.fc1 = nn.Linear(4 * 4 * 64, 500)
         self.dropout1 = nn.Dropout(0.25)
         self.dropout2 = nn.Dropout(0.5)
-        self.fc1 = nn.Linear(32*32, 500)
-        self.fc2 = nn.Linear(500, 250)
-        self.fc3 = nn.Linear(250, 100)
-        self.fc4 = nn.Linear(100, 10)
+        # self.fc1 = nn.Linear(32*32, 32*32)
+        self.fc1 = nn.Linear(32*32, 250)
+        self.fc2 = nn.Linear(250, 100)
+        self.fc3 = nn.Linear(100, 10)
         # self.pool = nn.MaxPool2d(2, 2)
         # self.conv2 = nn.Conv2d(32, 64, 3, 1)
         # self.fc1 = nn.Linear(16 * 5 * 5, 120)
         # self.fc3 = nn.Linear(84, 10)
 
     def forward(self, x):
-        # print('before start=', x.shape)
         x = F.relu(self.conv1(x))
         x = F.max_pool2d(x, 2)
         x = F.relu(self.conv2(x))
-        # print('after conv1=', x.shape)
         x = F.max_pool2d(x, 2)
         x = F.relu(self.conv3(x))
-        # print('after conv=', x.shape)
         x = F.max_pool2d(x, 2)
-        # x = x.view(-1, 4 * 4 * 64)
-        # print('before view=', x.shape)
         x = x.view(-1, 32 * 32)
-        # print('after view=', x.shape)
         x = self.dropout1(x)
         x = torch.flatten(x, 1)
-        # print('after flatten=', x.shape)
         x = F.relu(self.fc1(x))
         x = self.dropout1(x)
         x = F.relu(self.fc2(x))
         x = self.dropout1(x)
-        x = F.relu(self.fc3(x))
-        x = self.dropout1(x)
-        x = self.fc4(x)
+        x = self.fc3(x)
+        # x = self.dropout1(x)
+        # x = self.fc4(x)
         # x = self.pool(F.relu(self.conv1(x)))
         # x = self.pool(F.relu(self.conv2(x)))
         # x = x.view(-1, 16 * 5 * 5)
@@ -102,19 +94,21 @@ def train(model, use_cuda, train_loader, optimizer, epoch):
         # Converting the data to [batch_size, 784] from [batch_size, 1, 28, 28]
         # print('start train')
 
-        y_onehot = torch.zeros([target.shape[0], 10])  # Zero vector of shape [64, 10]
-        y_onehot[range(target.shape[0]), target] = 1
+        # y_onehot = torch.zeros([target.shape[0], 10])  # Zero vector of shape [64, 10]
+        # y_onehot[range(target.shape[0]), target] = 1
 
         # data = data.view([data.shape[0], 3072])
         # print(data.shape);
         # exit(0)
 
         if use_cuda:
-            data, y_onehot = data.cuda(), y_onehot.cuda()  # Sending the data to the GPU
+            data, target = data.cuda(), target.cuda()  # Sending the data to the GPU
+            # data, y_onehot = data.cuda(), y_onehot.cuda()  # Sending the data to the GPU
 
         optimizer.zero_grad()  # Setting the cumulative gradients to 0
         output = model(data)  # Forward pass through the model
-        loss = torch.mean((output - y_onehot) ** 2)  # Calculating the loss
+        # loss = torch.mean((output - y_onehot) ** 2)  # Calculating the loss
+        loss = F.cross_entropy(output, target)
         loss.backward()  # Calculating the gradients of the model. Note that the model has not yet been updated.
         optimizer.step()  # Updating the model parameters. Note that this does not remove the stored gradients!
 
@@ -137,17 +131,19 @@ def test(model, use_cuda, test_loader):
             # Converting the target to one-hot-encoding from categorical encoding
             # Converting the data to [batch_size, 784] from [batch_size, 1, 28, 28]
 
-            y_onehot = torch.zeros([target.shape[0], 10])
-            y_onehot[range(target.shape[0]), target] = 1
+            # y_onehot = torch.zeros([target.shape[0], 10])
+            # y_onehot[range(target.shape[0]), target] = 1
             # data = data.view([data.shape[0], 3072])
 
             if use_cuda:
-                data, target, y_onehot = data.cuda(), target.cuda(), y_onehot.cuda()  # Sending the data to the GPU
+                data, target = data.cuda(), target.cuda()  # Sending the data to the GPU
+                # data, target, y_onehot = data.cuda(), target.cuda(), y_onehot.cuda()  # Sending the data to the GPU
 
             # argmax([0.1, 0.2, 0.9, 0.4]) => 2
             # output - shape = [1000, 10], argmax(dim=1) => [1000]
             output = model(data)  # Forward pass
-            test_loss += torch.sum((output - y_onehot) ** 2)  # sum up batch loss
+            # test_loss += torch.sum((output - y_onehot) ** 2)  # sum up batch loss
+            test_loss += F.cross_entropy(output, target, reduction='sum')  # sum up batch loss
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the maximum output
             correct += pred.eq(target.view_as(pred)).sum().item()  # Get total number of correct samples
 
@@ -215,7 +211,7 @@ def main():
     if use_cuda:
         model = model.cuda()  # Put the model weights on GPU
 
-    criterion = nn.CrossEntropyLoss()
+    # criterion = nn.CrossEntropyLoss()
     # same as categorical_crossentropy loss used in Keras models which runs on Tensorflow
     optimizer = torch.optim.Adam(model.parameters(), lr=config.lr)  # fine tuned the lr
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.4, momentum=0.9)
