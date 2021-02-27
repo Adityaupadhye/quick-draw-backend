@@ -4,7 +4,7 @@ from PIL import Image
 
 classes = ['Bird', 'Flower', 'Hand', 'House', 'Pencil', 'Spectacles', 'Spoon', 'Sun', 'Tree', 'Umbrella']
 
-ort_session = ort.InferenceSession('savedModel/model_try_data2.onnx')  # load the saved onnx model
+ort_session = ort.InferenceSession('savedModel/model_final.onnx')  # load the saved onnx model
 
 imgpath = 'data2/Pencil/image/Pencil_1609258655396.png'
 path2 = 'data2/Umbrella/image/Umbrella_1609258441186.png'
@@ -19,6 +19,7 @@ path0 = 'data2/Sun/image/Sun_1609257615331.png'
 path10 = 'data2/Flower/image/Flower_1609258374874.png'
 path11 = 'data/Flower/image/Flower_1613021533630.png'
 path12 = 'data/Hand/image/Hand_1612968751876.png'
+path13 = 'data/House/image/House_1613047285747.png'
 
 
 # pre processing
@@ -44,4 +45,4 @@ def test(path):
 
 
 if __name__ == '__main__':
-    test(path12)
+    test(path13)

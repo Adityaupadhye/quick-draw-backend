@@ -11,8 +11,8 @@ seed = 0
 numEpochs = 30
 
 batchSize = {
-    'train': 20,
-    'test': 40
+    'train': 10,
+    'test': 20
 }
 
 numWorkers = {

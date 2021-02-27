@@ -102,6 +102,7 @@ def train(model, use_cuda, train_loader, optimizer, epoch):
         # data = data.view([data.shape[0], 3072])
         # print(data.shape);
         # exit(0)
+        # print(batch_idx)
 
         if use_cuda:
             data, target = data.cuda(), target.cuda()  # Sending the data to the GPU
@@ -114,11 +115,11 @@ def train(model, use_cuda, train_loader, optimizer, epoch):
         loss.backward()  # Calculating the gradients of the model. Note that the model has not yet been updated.
         optimizer.step()  # Updating the model parameters. Note that this does not remove the stored gradients!
 
-        batch_idx = train_loader.batch_size
-        if batch_idx % 20 == 0:
+        # batch_idx = train_loader.batch_size
+        if (batch_idx+1) % 2 == 0 or batch_idx == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
-                       100. * batch_idx / len(train_loader), loss.item()))
+                100. * batch_idx / len(train_loader), loss.item()))
 
 
 def test(model, use_cuda, test_loader):
@@ -151,7 +152,7 @@ def test(model, use_cuda, test_loader):
 
     test_loss /= len(test_loader.dataset)  # Accuracy = Total Correct / Total Samples
 
-    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
@@ -231,10 +232,10 @@ def main():
 
 
 def saveModel(model: Net):
-    torch.save(model.state_dict(), f'{config.savePath}/dqmodel_epochs_{config.numEpochs}.pt')
+    torch.save(model.state_dict(), f'{config.savePath}/model_final_epochs_{config.numEpochs}.pt')
     # save model in onnx format
     inp = torch.randn(1, 1, 32, 32)
-    torch.onnx.export(model, inp, f'{config.savePath}/model_try_data2.onnx', verbose=True,
+    torch.onnx.export(model, inp, f'{config.savePath}/model_final.onnx', verbose=True,
                       input_names=['data'], output_names=['output'])
 
 
