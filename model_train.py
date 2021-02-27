@@ -90,6 +90,8 @@ def train(model, use_cuda, train_loader, optimizer, epoch):
 
     for batch_idx, (data, target) in enumerate(train_loader):  # Get the batch
 
+        # print(data.shape)
+        # exit(0)
         # Converting the target to one-hot-encoding from categorical encoding
         # Converting the data to [batch_size, 784] from [batch_size, 1, 28, 28]
         # print('start train')
@@ -231,8 +233,8 @@ def main():
 def saveModel(model: Net):
     torch.save(model.state_dict(), f'{config.savePath}/dqmodel_epochs_{config.numEpochs}.pt')
     # save model in onnx format
-    inp = torch.randn(1, 1, 128, 128)
-    torch.onnx.export(model, inp, f'{config.savePath}/model.onnx', verbose=True,
+    inp = torch.randn(1, 1, 32, 32)
+    torch.onnx.export(model, inp, f'{config.savePath}/model_try_data2.onnx', verbose=True,
                       input_names=['data'], output_names=['output'])
 
 

@@ -8,7 +8,6 @@ import config
 
 
 class dataloader(Dataset):
-
     splitType = ''
 
     def __init__(self):
@@ -32,34 +31,41 @@ class dataloader(Dataset):
         image = Image.open(path)
         arr = np.asarray(image)
         image = Image.fromarray(arr[:, :, 3])
+        image = image.resize((32, 32))
+        image = (np.array(image) > 0.1).astype(np.float32)[None, :, :]
         # image = image.resize((128, 128))
         # print(type(image))
         # image = (np.array(image) > 0.1).astype(np.float32)[None, :, :]
         # print(type(image))
         # image.show()
+        # print(np.shape(image), type(image))
 
         # transform split
-        if split == 'train':
-            transform_train = transforms.Compose(
-                [transforms.Resize((32, 32)),  # resizes the image so it can be perfect for our model.
-                 transforms.RandomHorizontalFlip(),  # FLips the image w.r.t horizontal axis
-                 transforms.RandomRotation(30),  # Rotates the image to a specified angel
-                 transforms.RandomAffine(0, shear=10, scale=(0.8, 1.2)),
-                 # # Performs actions like zooms, change shear angles.
-                 # transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),  # Set the color params
-                 transforms.ToTensor(),  # convert the image to tensor so that it can work with torch
-                 # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # Normalize all the images
-                 transforms.Normalize((0.5,), (0.5,))
-                 ])
-            image = transform_train(image)
-            # print(type(image))
-        elif split == 'test':
-            transforms_test = transforms.Compose(
-                [transforms.Resize((32, 32)),
-                 transforms.ToTensor(),
-                 transforms.Normalize((0.5,), (0.5,))
-                 ])
-            image = transforms_test(image)
+        # if split == 'train':
+        #     transform_train = transforms.Compose(
+        #         [transforms.Resize((32, 32)),  # resizes the image so it can be perfect for our model.
+        #          transforms.RandomHorizontalFlip(),  # FLips the image w.r.t horizontal axis
+        #          transforms.RandomRotation(30),  # Rotates the image to a specified angel
+        #          transforms.RandomAffine(0, shear=10, scale=(0.8, 1.2)),
+        #          transforms.RandomVerticalFlip(),
+        #          # # Performs actions like zooms, change shear angles.
+        #          # transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),  # Set the color params
+        #          # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # Normalize all the images
+        #          transforms.ToTensor(),  # convert the image to tensor so that it can work with torch
+        #          transforms.Normalize((0.5,), (0.5,))
+        #          ])
+        #     image = transform_train(image)
+        #     # print(type(image))
+        # elif split == 'test':
+        #     transforms_test = transforms.Compose(
+        #         [transforms.Resize((32, 32)),
+        #          transforms.ToTensor(),
+        #          transforms.Normalize((0.5,), (0.5,))
+        #          ])
+        #     image = transforms_test(image)
+
+        # print(np.shape(image), type(image))
+        # exit(0)
 
         return image
 
@@ -69,6 +75,7 @@ class dataloader(Dataset):
         className = self.allClasses[classID]
         image_id = np.random.randint(len(self.allData[className]))
         image = self.allData[className][image_id]
+        # print('image=', type(image), image.shape)
 
         return image, classID
 
@@ -81,7 +88,6 @@ def _worker_init_fn(worker_id):
 
 
 def getDataLoader(type_='train'):
-
     dataloader.splitType = type_
 
     return DataLoader(
