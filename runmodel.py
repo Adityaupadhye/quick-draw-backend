@@ -15,8 +15,8 @@ path6 = 'data2/House/image/House_1609259235083.png'
 path7 = 'data/Spectacles/image/Spectacles_1612958478329.png'
 path8 = 'data/Bird/image/Bird_1613020665245.png'
 path9 = 'data2/Pencil/image/Pencil_1609258676164.png'
-path0 = 'data2/Sun/image/Sun_1609257615331.png'
-path10 = 'data2/Flower/image/Flower_1609258374874.png'
+path0 = 'data/Flower/image/Flower9.png'
+path10 = 'data/Flower/image/Flower3.png'
 path11 = 'data/Flower/image/Flower_1613021533630.png'
 path12 = 'data/Hand/image/Hand_1612968751876.png'
 path13 = 'data/House/image/House_1613047285747.png'
@@ -45,4 +45,4 @@ def test(path):
 
 
 if __name__ == '__main__':
-    test(path13)
+    test(path0)

@@ -8,7 +8,7 @@ savePath = 'savedModel'
 os.makedirs(savePath, exist_ok=True)
 
 seed = 0
-numEpochs = 30
+numEpochs = 50
 
 batchSize = {
     'train': 10,

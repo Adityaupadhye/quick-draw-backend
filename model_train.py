@@ -235,7 +235,7 @@ def saveModel(model: Net):
     torch.save(model.state_dict(), f'{config.savePath}/model_final_epochs_{config.numEpochs}.pt')
     # save model in onnx format
     inp = torch.randn(1, 1, 32, 32)
-    torch.onnx.export(model, inp, f'{config.savePath}/model_final.onnx', verbose=True,
+    torch.onnx.export(model, inp, f'{config.savePath}/model_final_user1.onnx', verbose=True,
                       input_names=['data'], output_names=['output'])
 
 
