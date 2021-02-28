@@ -4,7 +4,7 @@ from PIL import Image
 
 classes = ['Bird', 'Flower', 'Hand', 'House', 'Pencil', 'Spectacles', 'Spoon', 'Sun', 'Tree', 'Umbrella']
 
-ort_session = ort.InferenceSession('savedModel/model_final.onnx')  # load the saved onnx model
+ort_session = ort.InferenceSession('savedModel/model_final_user1.onnx')  # load the saved onnx model
 
 imgpath = 'data2/Pencil/image/Pencil_1609258655396.png'
 path2 = 'data2/Umbrella/image/Umbrella_1609258441186.png'
