@@ -16,8 +16,7 @@ pip install -r requirements.txt
 ```
 
 ## Results
-<img src="https://drive.google.com/file/d/1o8UWuDc0HH4TWZAcEK7DaLb3zWyHLM-N/view?usp=sharing" width="50%" height="50%">
-
+<img src="/results/resultss.png" width="60%" height="60%">
 
 ## How to train the model
 
@@ -46,6 +45,7 @@ data
 │       ├── Flower_1613021220324.png
 │       ├── Flower_1613021251673.png
 │       ├── Flower_1613021288600.png
+
 │       ├── Flower_1613021533630.png
 │       ├── Flower_1613031084396.png
 │       ├── Flower_1613031568962.png
