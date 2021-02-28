@@ -38,7 +38,7 @@ def result():
     output = runmodel.test(f'userdata/{filename}')
     print(output)
 
-    return 'got image url ' + output
+    return output
 
 
 @app.route('/upload_canvas', methods=['POST'])
