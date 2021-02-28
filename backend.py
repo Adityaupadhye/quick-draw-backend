@@ -17,12 +17,12 @@ def findtime():
     return now.strftime('%d%m%Y_%H%M%S')
 
 
-@app.route('/api/test')
+@app.route('/test')
 def test_fun():
     return "this is test function"
 
 
-@app.route('/api/result', methods=['POST'])
+@app.route('/result', methods=['POST'])
 def result():
     data = json.loads(request.data.decode('utf-8'))
     print(type(data))
