@@ -30,7 +30,7 @@ def result():
     # print('got this url= ', imgurl)
 
     os.makedirs('userdata', exist_ok=True)
-    filename = findtime()+'.png'
+    filename = 'image.png'
 
     with open(f'userdata/{filename}', 'wb') as f:
         f.write(base64.decodebytes(image))
