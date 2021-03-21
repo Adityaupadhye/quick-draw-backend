@@ -10,53 +10,22 @@ import dataloader
 
 
 class Net(nn.Module):
-    # def __init__(self):  # Constructor
-    #
-    #     super(Net, self).__init__()
-    #
-    #     # 2 Layers
-    #     self.fc1 = nn.Linear(3072, 800)
-    #     self.fc2 = nn.Linear(800, 100)
-    #     self.fc3 = nn.Linear(100, 10)
-    #
-    #     # xavier_initialization
-    #
-    # def forward(self, x):
-    #     # x - shape = [64, 784]
-    #     # Layer 1
-    #     l1 = self.fc1(x)  # l1 - shape = [64, 100]
-    #
-    #     # Activation 1
-    #     l1_a1 = torch.relu(l1)  # l1_a1 - shape = [64, 100]
-    #
-    #     l2 = self.fc2(l1_a1)
-    #
-    #     l2_a2 = torch.relu(l2)
-    #
-    #     # Layer 2
-    #     l3 = self.fc3(l2_a2)  # l2 - shape = [64, 10]
-    #
-    #     # Activation 2
-    #     l3_a3 = torch.relu(l3) # l2_a2 - shape = [64, 10]
-    #
-    #     return l3_a3
+   
+   
 
     def __init__(self):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(1, 16, 3, 1, padding=1)
         self.conv2 = nn.Conv2d(16, 32, 3, 1, padding=1)
         self.conv3 = nn.Conv2d(32, 64, 3, 1, padding=1)
-        # self.fc1 = nn.Linear(4 * 4 * 64, 500)
+        
         self.dropout1 = nn.Dropout(0.25)
         self.dropout2 = nn.Dropout(0.5)
-        # self.fc1 = nn.Linear(32*32, 32*32)
+      
         self.fc1 = nn.Linear(32*32, 250)
         self.fc2 = nn.Linear(250, 100)
         self.fc3 = nn.Linear(100, 10)
-        # self.pool = nn.MaxPool2d(2, 2)
-        # self.conv2 = nn.Conv2d(32, 64, 3, 1)
-        # self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        # self.fc3 = nn.Linear(84, 10)
+      
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -73,14 +42,6 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = self.dropout1(x)
         x = self.fc3(x)
-        # x = self.dropout1(x)
-        # x = self.fc4(x)
-        # x = self.pool(F.relu(self.conv1(x)))
-        # x = self.pool(F.relu(self.conv2(x)))
-        # x = x.view(-1, 16 * 5 * 5)
-        # x = F.relu(self.fc1(x))
-        # x = F.relu(self.fc2(x))
-        # x = self.fc3(x)
         return x
 
 
@@ -172,42 +133,12 @@ def seed(seed_value):
 def main():
     use_cuda = False  # Set it to False if you are using a CPU
 
-    seed(0)  # Used to fix randomness in the code! Very important!
-
-    # Convert the dataset to tensor and subtract the mean and divide by standard
-    # deviation. Why? So that neurons don't saturate!
-    # transform_train = transforms.Compose(
-    #     [transforms.Resize((32, 32)),  # resizes the image so it can be perfect for our model.
-    #      transforms.RandomHorizontalFlip(),  # FLips the image w.r.t horizontal axis
-    #      transforms.RandomRotation(10),  # Rotates the image to a specified angel
-    #      transforms.RandomAffine(0, shear=10, scale=(0.8, 1.2)),  # Performs actions like zooms, change shear angles.
-    #      transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),  # Set the color params
-    #      transforms.ToTensor(),  # convert the image to tensor so that it can work with torch
-    #      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # Normalize all the images
-    #      ])
-
-    # transform = transforms.Compose([transforms.Resize((32, 32)),
-    #                                 transforms.ToTensor(),
-    #                                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-    #                                 ])
-    # [a1, a2, a3] / [b1, b2, b3] = [a1/b1, a2/b2, a3/b3]
-
-    # Wx + b =~ b
-
-    # dataset1 = datasets.MNIST('../data', train=True, download=True, transform=transform)  # Get the train dataset
-    # dataset2 = datasets.MNIST('../data', train=False, transform=transform)  # Get the test dataset
-
-    # training_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)  #
-    # Data augmentation is only done on training images test_dataset = datasets.CIFAR10(root='./data', train=False,
-    # download=True, transform=transform)
+    seed(0)   
 
     train_dataset = dataloader.getDataLoader()
     test_dataset = dataloader.getDataLoader('test')
 
-    # exit(0)
-    # train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=100, shuffle=True)
-    # # Batch size of 100 i.e to work with 100 images at a time
-    # test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False)
+ 
 
     model = Net()  # Get the model
 
